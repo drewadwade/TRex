@@ -1,0 +1,166 @@
+#!/bin/bash
+
+### Author: Andrew Wade @drewadwade drewadwade.github.io
+### Version: 1.0
+### Written: 25 February 2019
+### Revised: 
+
+### TRex is a steganography workflow tool based on existing *NIX commands (file, strings, 
+### binwalk), analysis tools (stegoVeritas, stegocracker), and techniques (header fixes, PKZIP 
+### isolation) to streamline steganography image files.
+###
+### USAGE: TRex filename [-q] [-r] [-b]
+### -q runs stegcracker using the self-generated wordlist
+### -r runs stegcracker using the rockyou wordlist
+### -b runs stegcracker using a 7 character brute force wordlist (0 to zzzzzzz)
+### -? or --help displays this usage information
+### Results can be found in a directory named after the file inside the current working directory  
+
+### Reset the option variables
+# SET quick == FALSE
+# SET rock == FALSE
+# SET brute == FALSE
+# SET help == FALSE
+ 
+### Get the filename from the input parameter
+
+### Get the wordlist options from the input option(s)
+# IF -q 
+#	quick == TRUE
+# IF -r 
+#	rock == TRUE
+# IF -b 
+#	brute == TRUE
+# IF -? || --help 
+#	help == TRUE
+
+### If the filename does not exist or if the help options are added 
+# IF ! filename -e || help
+#	echo "USAGE: TRex filename [-q] [-r] [-b]"
+#	echo "-q runs stegcracker using the self-generated wordlist"
+#	echo "-r runs stegcracker using the rockyou wordlist"
+#	echo "-b runs stegcracker using a 7 character brute force wordlist (0 to zzzzzzz)"
+#	echo "-? or --help displays this usage information"
+#	echo "Results can be found in the local directory named after the file" 
+
+### MAKE the output directory named after the provided file 
+# name=     filename without the extension
+# mkdir $name
+
+### Run the file through stegoVeritas and save the folder of output files in the output folder 
+# echo "######################################################################################" >> ./$name/report
+# echo "stegoVeritas results are in the ./$name/results folder" >> ./name/report
+# echo "--------------------------------------------------------------------------------------" >> ./$name/report
+# stegoVeritas ./filename >> ./$name/report 2> /dev/null
+# mv ./results/* ./$name/results/*
+# echo "######################################################################################" >> ./$name/report
+# echo " " >> ./$name/report
+
+
+### Run the file through file and append the output to the report file in the output folder 
+# echo "######################################################################################" >> ./name/report
+# echo "File type information" >> ./name/report
+# echo "--------------------------------------------------------------------------------------" >> ./name/report
+# file filename >> ./name/report
+# echo "######################################################################################" >> ./name/report
+# echo " " >> ./name/report
+
+
+### If the file type identified by file is PNG, run the file through pngcheck and append the output
+### to the report file in the output folder
+# IF cat ./name/report | grep PNG
+# 	echo "######################################################################################" >> #./name/report
+# 	echo "PNG file information" >> ./name/report
+# 	echo "--------------------------------------------------------------------------------------" >> #./name/report
+#	pngcheck ./filename >> ./name/report
+
+### If the pngcheck indicates a bad CRC check, replace the bad CRC with the expected CRC, save the 
+### resulting file as CRC_FIX.png, and append a note to the report file in the output folde
+#	IF cat ./name/report | grep CRC ERROR 
+#		REPLACE BAD CRC CHECK IN FILENAME WITH EXPECTED CRC
+#		SAVE AS CRC_FIX.PNG
+# 		echo "File CRC check failed" >> ./name/report
+# 		echo "Bad CRC replaced with expected CRC and saved as ./name/CRC_FIX.png" >> ./name/report
+# 		echo "######################################################################################" >> #./name/report
+#		echo " " >> ./name/report
+
+
+### If the file contains the PKZIP header, run the file through binwalk to identify the index of any 
+### PKZIP headers. These indices are added to an array called PKlist
+# IF cat ./filename contains 504B0304
+# 	echo "######################################################################################" >> #./name/report
+# 	echo "Binwalk found one or more PKZIP headers" >> ./name/report
+#	binwalk ./filename >> ./name/report
+#	binwalk ./filename | grep POSITION OF EACH 504B0304 >> $PKlist
+# 	echo "" >> ./name/report
+#	echo BIT POSITION IMMEDIATELY AFTER END >> $PKlist
+#	PKcount = cat $PKlist | wc 	
+
+### For each stretch from one PKZIP header to the next or to the end of the file, isolate that section
+### and save it as a new ZIP file called PKCHECK_[starting header#]_[ending header#] (e.g. PKCHECK_1_2)
+# 	PKS1=0
+# 	WHILE PKS1 < PKcount-1 
+#		PKS2=PKS1+1
+#		WHILE PKS2 < PKcount
+#			DO
+#				CUT FROM PKlist[PKS1] to PKlist[PKS2] (not inclusive of PKlist[PKS2])
+#				SAVE AS PKCHECK_$PKS1_$PKS2
+#				PKS2+=1
+#			DONE
+#		PKS1+=1
+
+
+### If the quick wordlist option was selected, create the quick wordlist using the filename, strings 
+### from the file, and base64 and base32 decoded versions of those strings, then run the file through 
+### stegcracker using that list and append any results to the report file in the output folder
+# IF quick == TRUE 
+# 	CREATE quick.txt wordlist file
+# 	echo name > ./name/quick.txt
+# 	strings filename >> ./name/quick.txt
+# 	cat ./name/quick.txt | base64 -d > ./name/quick.tmp
+# 	cat ./name/quick.tmp >> ./name/quick.txt
+# 	cat ./name/quick.txt | base32 -d > ./name/quick.tmp
+# 	cat ./name/quick.tmp >> ./name/quick.txt
+# 	echo "######################################################################################" >> #./name/report
+#	echo "Quick wordlist is in the ./$name folder" >> ./name/report
+# 	echo "######################################################################################" >> #./name/report
+# 	echo " " >> ./name/report
+# 	echo "######################################################################################" >> #./name/report
+#	echo "TRex stegcracker results using the quick wordlist" >> ./name/report
+# 	echo "--------------------------------------------------------------------------------------" >> #./name/report
+# 	stegcracker $filename ./name/testwords & >> ./name.report 2> /dev/null  
+# 	echo "######################################################################################" >> #./name/report
+# 	echo " " >> ./name/report
+
+### If the rockyou wordlist option was selected, check to see that the rockyou.txt wordlist is present 
+### in the expected /usr/share/wordlists/ folder, then run the file through stegcracker using that list 
+### and append any results to the report file in the output folder
+# IF rock == TRUE and /usr/share/wordlists/rockyou.txt -e
+# 	echo "######################################################################################" >> #./name/report
+#	echo "TRex stegcracker results using rockyou.txt"
+# 	echo "--------------------------------------------------------------------------------------" >> #./name/report
+# 	stegcracker $filename /usr/share/wordlists/rockyou.txt & >> ./name.report 2> #/dev/null  
+# 	echo "######################################################################################" >> #./name/report
+# 	echo " " >> ./name/report
+# ELIF rock == TRUE and ! /usr/share/wordlists/rockyou.txt -e
+# 	echo "######################################################################################" >> #./name/report
+#	echo "The rockyou.txt wordlist was not found in /usr/share/wordlists/"
+# 	echo "######################################################################################" >> #./name/report
+# 	echo " " >> ./name/report
+
+
+### If the brute force wordlist option was selected, check to see that the bruteforce.txt wordlist is 
+### present in the expected /usr/share/wordlists/ folder, create it if it is not present, and then run 
+### the file through stegcracker using that list and append any results to the report file in the 
+### output folder
+# IF brute == TRUE and ! /usr/share/wordlists/bruteforce.txt -e
+	for char in {0..zzzzzzz}; 
+		do 
+			echo char >> /usr/share/wordlists/bruteforce.txt
+		done
+# ELIF brute == TRUE and /usr/share/wordlists/bruteforce.txt -e
+# 	echo "######################################################################################" >> #./name/report
+#	echo "TRex stegcracker results using brute force"
+# 	echo "--------------------------------------------------------------------------------------" >> #./name/report
+# 	stegcracker $filename bruteforce & >> ./name.report 2> /dev/null  
+# 	echo "######################################################################################" >> #./name/report
