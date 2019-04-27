@@ -7,7 +7,7 @@
 
 ### TRex is a steganography workflow tool based on existing *NIX commands (file, strings, 
 ### binwalk), analysis tools (stegoVeritas, stegocracker), and techniques (header fixes, PKZIP 
-### isolation) to streamline steganography image files.
+### isolation) to streamline steganography image file analysis.
 ###
 ### USAGE: TRex filename [-q] [-r] [-b]
 ### -q runs stegcracker using the self-generated wordlist
