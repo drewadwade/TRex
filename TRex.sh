@@ -3,7 +3,7 @@
 ### Author: Andrew Wade @drewadwade drewadwade.github.io
 ### Version: 1.0
 ### Written: 25 February 2019
-### Revised:
+### Revised: 11 August 2019
 
 ### TRex is a steganography workflow tool based on existing *NIX commands (file, strings,
 ### binwalk), analysis tools (stegoVeritas, stegocracker), and techniques (header fixes, PKZIP
