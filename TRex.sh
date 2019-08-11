@@ -82,26 +82,14 @@ then
   	pngcheck ./$TARGET >> ./$FOLDER/report
 
 ### If the pngcheck indicates a bad CRC check, replace the bad CRC with the expected CRC, save the
-### resulting file as CRC_FIX.png, and append a note to the report file in the output folde
+### resulting file as CRC_FIX.png, and append a note to the report file in the output folder.
 	  if grep "CRC error" "./$FOLDER/report";
     then
        echo "Bad CRC check detected. Fixing..."
  		   echo "File CRC check failed" >> ./$FOLDER/report
-       GOODCRCPLUS=`sed -n -e 's/.*computed//p' ./$FOLDER/report | sed -e 's/[ \t]*//' | awk '{print $1}'`
-       GOODCRC=`echo "$GOODCRCPLUS" | cut -d',' -f1`
-       BADCRCPLUS=`sed -n -e 's/.*expected//p' ./$FOLDER/report | sed -e 's/[ \t]*//' | awk '{print $1}'`
-       BADCRC=`echo "$BADCRCPLUS" | cut -d')' -f1`
-       cp $TARGET ./$FOLDER/CRC_FIX.png
-       xxd -plain ./$FOLDER/CRC_FIX.png > ./$FOLDER/CRC_FIX.hex
-       BROKEN=$(<./$FOLDER/CRC_FIX.hex)
-       FIXED=${BROKEN/$BADCRC/$GOODCRC}
-       echo $FIXED > ./$FOLDER/CRC_FIX.hex
-#       awk "NR==1,/$BADCRC/{sub(/$BADCRC/, "$GOODCRC")}" ./$FOLDER/CRC_FIX.hex
-  #     sed -i "0,/$BADCRC/s//$BADCRC/$GOODCRC/" ./$FOLDER/CRC_FIX.hex
-#       sed -i "s/$BADCRC/$GOODCRC/g" ./$FOLDER/CRC_FIX.hex
-       xxd -plain -revert ./$FOLDER/CRC_FIX.hex ./$FOLDER/CRC_FIX.png
-       echo $GOODCRC
-       echo $BADCRC
+       ### The following is a modified exerpt from the PNG Check & Repair Tool by sherlly
+       ### The original code can be found at https://github.com/sherlly/PCRT
+       python miniPCRT.py -i ./$TARGET -o ./$FOLDER/CRC_FIX.png
        echo "Bad CRC replaced with expected CRC and saved as ./$FOLDER/CRC_FIX.png" >> ./$FOLDER/report
     fi
   	echo "######################################################################################" >> ./$FOLDER/report
