@@ -4,13 +4,20 @@ A steganography image-muncher (well, workflow tool)
 TRex is a steganography workflow tool based on *NIX commands (file, strings, binwalk), analysis tools (stegoVeritas, stegocracker), and techniques (header fixes, PKZIP isolation) to streamline steganography image file analysi.
 
 USAGE: TRex filename [-q] [-r]
+
   -q runs stegcracker using the quick self-generated wordlist (from filename and strings output)
+
   -r runs stegcracker using the rockyou wordlist
+
   -? or --help displays this usage information
+
   Results can be found in the local directory named after the analysed file
+
   Requires: stegoVeritas available at github/bannsec/stegoVeritas
+
             stegcracker available at github/Paradoxis/stegcracker
             
+PROCESS: 
 Creates an output directory named after the target file without extension
 
 Runs the file through file
