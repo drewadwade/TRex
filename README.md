@@ -12,12 +12,21 @@ USAGE: TRex filename [-q] [-r]
             stegcracker available at github/Paradoxis/stegcracker
             
 Creates an output directory named after the target file without extension
+
 Runs the file through file
+
 Checks for EXIF data
+
 If the file type identified by file is PNG, runs the file through pngcheck
+
 If the pngcheck indicates a bad CRC check, replaces the bad CRC with the expected CRC
+
 If the file contains the PKZIP header, runs the file through binwalk to identify the index of any PKZIP headers. 
+
 Isolates possible PKZIP files from binwalk indices
+
 Runs the file through stegoVeritas LSB analysis
+
 If the quick wordlist option was selected, creates the quick wordlist using the filename, strings from the file, and base64 and base32 decoded versions of those strings, then runs the file through stegcracker
+
 If the rockyou wordlist option was selected, checks to see that the rockyou.txt wordlist is present in the expected /usr/share/wordlists/ folder, then runs the file through stegcracker
