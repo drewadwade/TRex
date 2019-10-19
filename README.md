@@ -15,9 +15,12 @@ USAGE: TRex filename [-q] [-r]
 
   Requires: stegoVeritas available at github/bannsec/stegoVeritas
 
-            stegcracker available at github/Paradoxis/stegcracker
+  Requires: stegcracker available at github/Paradoxis/stegcracker
             
+
+
 PROCESS: 
+
 Creates an output directory named after the target file without extension
 
 Runs the file through file
