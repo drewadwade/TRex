@@ -108,7 +108,7 @@ binwalk ./$TARGET > ./$FOLDER/binwalk_results
 if grep "Zip" "./$FOLDER/binwalk_results";
 then
  	echo "######################################################################################" >> ./$FOLDER/report
- 	echo "Binwalk found one or more PKZIP headers" >> ./$FOLDER/report
+ 	echo "Binwalk found one or more ZIP headers" >> ./$FOLDER/report
 	cat ./$FOLDER/binwalk_results >> ./$FOLDER/report
   echo "Possible PKZIP files saved as ./$FOLDER/PKZIPS/PKCHECK_[decimal offset].ZIP" >> ./$FOLDER/report
   echo "Isolating possible PKZIP files..."
