@@ -1,0 +1,7 @@
+zsteg, which checks all the available channels and even checks the most significant bit for hidden data, we can get the flag using the following command:
+	zsteg -a hackers.bmp
+
+Steg Snow
+	https://manpages.ubuntu.com/manpages/bionic/man1/stegsnow.1.html
+
+jsteg
